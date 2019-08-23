@@ -71,7 +71,8 @@ Y_one_hot = tf.reshape(Y_one_hot, [-1, nb_classes])
 
 L1 = tf.layers.dense(X, 10, activation=tf.nn.relu)
 L2 = tf.layers.dense(L1, 10, activation=tf.nn.relu)
-L3 = tf.layers.dense(L2, 3, activation=tf.nn.softmax)
+L3 = tf.layers.dense(L2, 10, activation=tf.nn.relu)
+L_output = tf.layers.dense(L3, 3, activation=tf.nn.softmax)
 
 # layer1, next_input_dim = create_sigmoid_layer(X, 4, 10, weight_name="weight1", bias_name="bias1")
 # layer2, next_input_dim = create_sigmoid_layer(layer1, next_input_dim, 10, weight_name="weight2", bias_name="bias2")
@@ -81,10 +82,10 @@ L3 = tf.layers.dense(L2, 3, activation=tf.nn.softmax)
 
 
 
-cost = tf.reduce_mean(-tf.reduce_sum(tf.cast(Y_one_hot, dtype=tf.float32) * tf.log(L3), axis=1)) 
+cost = tf.reduce_mean(-tf.reduce_sum(tf.cast(Y_one_hot, dtype=tf.float32) * tf.log(L_output), axis=1)) 
 train  = tf.train.AdamOptimizer(learning_rate=0.01).minimize(cost)
 
-prediction = tf.argmax(L3, 1)
+prediction = tf.argmax(L_output, 1)
 correct_prediction = tf.equal(prediction, tf.argmax(Y_one_hot, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
@@ -125,10 +126,10 @@ with tf.Session() as sess:
         ),
     )
 
-    pred = sess.run(tf.argmax(L3, 1), feed_dict={X: x_test})
+    pred = sess.run(tf.argmax(L_output, 1), feed_dict={X: x_test})
     # y_data: (N, 1) = flatten => (N, ) matches pred.shape
     for p, y in zip(pred, y_test.flatten()):
-        print("[{}] Prediction: {} True Y: {}".format(p == int(y), p, int(y)))   
+        print("[{}] Prediction: {} True Y: {}".format(int(p) == int(y), int(p), int(y)))   
 
 '''
 Accuracy:  0.96666664
