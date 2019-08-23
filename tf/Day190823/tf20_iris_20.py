@@ -23,7 +23,7 @@ tf.contrib.layers.xavier_initializer()      # 평균적으로 성능 우수
 적용해보기
 '''
 nb_classes = 3
-
+##
 
 tf.set_random_seed(777)     # for reproducibility
 
