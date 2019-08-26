@@ -33,7 +33,7 @@ print(x_data)
 print(y_data)
 
 x_data = x_data.reshape(1,6,5)  # (1,6,5)
-y_data = y_data.reshape(6,5)
+
 
 print(x_data.shape) # (1,6,5)
 print(x_data.dtype)
@@ -52,33 +52,33 @@ hidden_size = 5         # 첫번째 노드 출력 개수
 learning_rate = 0.1
 
 optimizer = Adam(lr=0.01)
-def rnn_not_softmax(optimizer=optimizer):
+def rnn_softmax_2(optimizer=optimizer):
     model = Sequential()
-    model.add(LSTM(64, input_shape=(6,5)))
-    model.add(Dense(128, activation="relu"))
-    model.add(Dense(212, activation="relu"))
+    model.add(LSTM(30, input_shape=(6,5)))
+    # model.add(Dense(128, activation="relu"))
+    # model.add(Dense(212, activation="relu"))
 
 
-    model.add(Dense(6, activation="relu"))
-
-    model.compile(loss="mse", optimizer=optimizer, metrics=["acc"])
-    return model
-
-def rnn_softmax(optimizer=optimizer):
-
-    model = Sequential()
-    model.add(LSTM(64, input_shape=(6,5)))
-    model.add(Dense(128, activation="relu"))
-
-
-    model.add(Dense(5, activation="softmax"))
+    model.add(Dense(6*5, activation="softmax"))
 
     model.compile(loss="categorical_crossentropy", optimizer=optimizer, metrics=["acc"])
     return model
 
+def rnn_softmax(optimizer=optimizer):
+    model = Sequential()
+    model.add(LSTM(30,input_shape=(6,5),return_sequences=True))
+    model.add(LSTM(10,return_sequences=True))
 
-model = rnn_softmax(optimizer=optimizer)
-# model = rnn_not_softmax(optimizer=optimizer)
+    model.add(LSTM(5,activation="softmax",return_sequences=True))
+
+    model.compile(loss="categorical_crossentropy", optimizer=optimizer, metrics=["acc"])
+    return model
+
+# y_data = y_data.reshape(1,6,5)
+# model = rnn_softmax(optimizer=optimizer)
+
+model = rnn_softmax_2(optimizer=optimizer)
+y_data = y_data.reshape(1,6*5)
 
 from keras.callbacks import EarlyStopping
 # early_stopping = EarlyStopping(monitor='acc', patience=30, mode='auto')
@@ -89,11 +89,17 @@ model.fit(x_data, y_data, epochs=500, batch_size=4, verbose=1
 _, acc = model.evaluate(x_data, y_data)
 
 y_predict = model.predict(x_data)
+## softmax
+# y_predict = np.argmax(y_predict, axis=2)
+# y_data = np.argmax(y_data, axis=2)
+
+## softmax2
+y_predict = y_predict.reshape(6,5)
+y_predict = np.argmax(y_predict, axis=1)
 
 print('acc :', acc)
-print('y_predict(x_test) :', np.round(y_predict).astype('int32'))
-y_pred_idx = np.round(y_predict).astype('int32')
+print('y_predict(x_test) :', y_predict)
 
-result_str = [idx2char[c] for c in np.squeeze(y_pred_idx)]      
+result_str = [idx2char[c] for c in np.squeeze(y_predict)]      
 
 print("\nprediction str :", ''.join(result_str))
