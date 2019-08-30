@@ -43,3 +43,16 @@ mnist/data/t10k-labels-idx1-ubyte.gz
 mnist/data/train-images-idx3-ubyte.gz
 mnist/data/train-labels-idx1-ubyte.gz
 ffff/ff.py
+data/kaggle/categorical_feature_encoding_challenge/npy/train_y.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/ori_test_id.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/ori_test_x_cat.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/ori_test_x_num.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/ori_test.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/ori_train_id.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/ori_train_x_cat.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/ori_train_x_num.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/ori_train_y.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/ori_train.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/test_x.npy
+data/kaggle/categorical_feature_encoding_challenge/npy/train_x.npy
+*.csv
