@@ -19,14 +19,43 @@ print(test_id.shape) # (200000, )
 
 ### model
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.model_selection import KFold, RandomizedSearchCV, train_test_split
+
+train_x, val_x, train_y, val_y = train_test_split(
+    train_x, train_y, test_size=0.3
+)
+
 # rf = RandomForestClassifier(max_depth = 500, random_state=0, n_jobs=-1, n_estimators=1000)
-rf = RandomForestRegressor(max_depth = 500, random_state=0, n_jobs=-1, n_estimators=1000)
-rf.fit(train_x, train_y)
-train_score = rf.score(train_x, train_y)
-print("train_score :", train_score)
+# rf = RandomForestRegressor(max_depth = 500, random_state=0, n_jobs=-1, n_estimators=1000)
+
+def build_model():
+    # model = RandomForestClassifier(max_depth=600, n_jobs=-1, min_samples_leaf=10, n_estimators=1000, max_features='log2')
+    model = RandomForestRegressor(max_depth=600, n_jobs=-1, min_samples_leaf=10, n_estimators=1000, max_features=None)
+    return model
+
+
+def create_hyperparameters():
+    n_estimators = [100, 200, 400, 800, 1000]
+    max_depth = [100, 200,300,400,500]
+    min_samples_leaf = [1, 5, 10]
+    max_leaf_nodes = [100, 1000, 2000]
+    n_jobs = [-1]
+    return {"n_estimators":n_estimators, "max_depth":max_depth, 
+            "min_samples_leaf":min_samples_leaf, "max_leaf_nodes":max_leaf_nodes,
+            "n_jobs":n_jobs}      # Map 형태로 반환
+
+kfold = KFold(n_splits=5, shuffle=True)
+# 학습하기
+model = build_model()
+# hyperparameters = create_hyperparameters()
+# search = RandomizedSearchCV(estimator=model, param_distributions=hyperparameters, n_iter=15, n_jobs=1, cv=kfold)
+
+model.fit(train_x, train_y)
+test_score = model.score(val_x, val_y)
+print("test_score :", test_score)
 
 ### fit and predict
-y_pred = rf.predict(test_x)
+y_pred = model.predict(test_x)
 
 # df_test_y['target'] = pd.Series(y_pred, index=df_test_y.index)
 df_res_data = {'id':test_id, 'target': y_pred}

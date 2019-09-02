@@ -45,7 +45,8 @@ print(test_x.shape)
 
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-scaler = StandardScaler()
+scaler = MinMaxScaler()
+# scaler = StandardScaler()
 
 scaler.fit(train_x)
 train_x = scaler.transform(train_x)
